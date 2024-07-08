@@ -1,0 +1,18 @@
+[package]
+name = "kioto-serial"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/strawlab/kioto-serial"
+license = "MIT OR Apache-2.0"
+keywords = ["rs232", "serial", "tokio"]
+categories = ["asynchronous", "hardware-support"]
+authors = ["Andrew Straw <strawman@astraw.com>"]
+description = "Provide serial port I/O using tokio."
+
+[dependencies]
+futures = "0.3.30"
+pin-project-lite = "0.2.14"
+serialport = "4.4.0"
+thiserror = "1.0.61"
+tokio = { version = "1.38.0", features = ["io-util", "sync"] }
+tokio-util = { version = "0.7.11", features = ["io", "io-util"] }
