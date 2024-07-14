@@ -19,6 +19,14 @@ use pin_project_lite::pin_project;
 use serialport::SerialPort;
 use tokio::io::{AsyncWriteExt, ReadBuf};
 
+// ensure that we never instantiate a NeverOk type
+macro_rules! assert_never {
+    ($never: expr) => {{
+        let _: NeverOk = $never;
+        unreachable!("NeverOk was instantiated");
+    }};
+}
+
 /// Builder to open a serial port.
 ///
 /// Create this by calling [new]. Open the port by calling
@@ -210,9 +218,7 @@ fn open(
 /// convert our Result type to Result from std::io
 fn to_std_io<T>(res: Result<NeverOk, Error>) -> std::io::Result<T> {
     match res {
-        Ok(_never) => {
-            unreachable!();
-        }
+        Ok(never) => assert_never!(never),
         Err(e) => match e {
             Error::Io(e) => Err(e),
             other => Err(std::io::Error::new(
