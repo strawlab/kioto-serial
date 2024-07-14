@@ -70,7 +70,7 @@ impl SerialPortBuilderExt for SerialPortBuilder {
 }
 
 pin_project! {
-    /// An asynchrounous implementation of a serial port.
+    /// An asynchronous implementation of a serial port.
     ///
     /// Implements both [tokio::io::AsyncRead] and [tokio::io::AsyncWrite].
     ///
