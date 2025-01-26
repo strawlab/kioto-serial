@@ -1,13 +1,3 @@
-//! Provide serial port I/O using tokio.
-//!
-//! This crate provides an interface very similar to
-//! [`tokio-serial`](https://crates.io/crates/tokio-serial) with a different
-//! implementation. Ideally, it can serve as a drop-in replacement.
-//!
-//! The implementation uses synchronous blocking I/O to the serial port and then
-//! wraps these with asynchronous channels.
-#![deny(missing_docs)]
-
 use std::{
     future::Future,
     pin::Pin,
