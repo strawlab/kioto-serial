@@ -9,10 +9,13 @@ categories = ["asynchronous", "hardware-support"]
 authors = ["Andrew Straw <strawman@astraw.com>"]
 description = "Provide serial port I/O using tokio."
 
-[dependencies]
+[target.'cfg(not(target_os = "windows"))'.dependencies]
 futures = "0.3.30"
 pin-project-lite = "0.2.14"
 serialport = "4.4.0"
 thiserror = "1.0.61"
 tokio = { version = "1.38.0", features = ["io-util", "sync"] }
 tokio-util = { version = "0.7.11", features = ["io", "io-util"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+tokio-serial = "5.4.5"

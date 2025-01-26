@@ -6,9 +6,9 @@
 
 Provide serial port I/O using tokio.
 
-The implementation uses synchronous blocking I/O to the serial port in newly
-spawned threads (one for reading and one for writing) and then wraps these with
-asynchronous channels.
+Except on Windows (see below), the implementation uses synchronous blocking I/O
+to the serial port in newly spawned threads (one for reading and a cloned handle
+for writing) and then wraps these with asynchronous channels.
 
 This crate provides an interface very similar to
 [`tokio-serial`](https://crates.io/crates/tokio-serial) with a different
@@ -21,6 +21,16 @@ tokio-serial = { package = "kioto-serial", version = "0.1.0" }
 
 and continue with code originally written for `tokio-serial`.
 
+In Windows, `tokio-serial` is re-rexported because the approach used here,
+cloning the serial port handle, simply does not work. Specifically, a blocking
+read from the port blocks writing. (Potential future investigation: use an async
+implementation using overlapped I/O based on sources such as
+[`serial2`](https://crates.io/crates/serial2) or
+[`rust-serial-prototype`](https://github.com/carstenandrich/rust-serial-prototype)
+or implement our own async implementation using overlapped I/O based on sources
+such as [this](http://www.flounder.com/serial.htm) or
+[this](https://gist.github.com/carstenandrich/5ec43cdb53af02c26ebffa11dd337d4f).)
+
 ## Why write this and not just use `tokio-serial`?
 
 As noted above, this crate uses spawned threads and blocking serial I/O.
@@ -32,9 +42,9 @@ We were experiencing long latencies from the tokio scheduler when using
 connections to different devices and other tokio tasks such as a webserver and a
 `tokio::time::Interval` timer with 1 msec resolution, the ticks from the timer
 would be very irregular. In the process of debugging, we wrote `kioto-serial`
-and found that using it instead of `tokio-serial` solved this latency issue. Since
-that point, we have not delved deeper into `tokio-serial` to attempt to localize
-the issue. See https://github.com/berkowski/tokio-serial/issues/72.
+and found that using it instead of `tokio-serial` solved this latency issue.
+Since that point, we have not delved deeper into `tokio-serial` to attempt to
+localize the issue. See https://github.com/berkowski/tokio-serial/issues/72.
 
 ## License
 
